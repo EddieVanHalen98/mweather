@@ -100,11 +100,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         alertController.addAction(changeAction)
         
-        let feedbackAction = UIAlertAction(title: "Send Feedback", style: .default) { _ in
-            // TODO
-        }
-        alertController.addAction(feedbackAction)
-        
         let moreAction = UIAlertAction(title: "More From Me", style: .default) { _ in
             if let url = URL(string: "http://www.evh98.com") {
                 UIApplication.shared.open(url, options: [:])
