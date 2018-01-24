@@ -57,12 +57,8 @@ class WeatherViewController: UIViewController {
                         self.weather.weekCondition.append(weekCondition)
                     }
                 }
-                
-                print("got a response!")
-                
                 self.updateUI()
             }
-            
             self.showUI()
         }
     }
@@ -102,7 +98,7 @@ class WeatherViewController: UIViewController {
         var analysis = (getConditionAnalysis() + "\n\n")
         analysis += (getWindAnalysis() + "\n\n")
         analysis += (getHumidityAnalysis() + "\n\n")
-        analysis += "Over the week the forecast is mostly \(self.weather.weekCondition!.mode!.lowercased())"
+        analysis += "Over the week the forecast is mainly \(self.weather.weekCondition!.mode!.lowercased())"
         
         return analysis
     }
@@ -112,11 +108,13 @@ class WeatherViewController: UIViewController {
      */
     private func getConditionAnalysis() -> String {
         let city = weather.city!
-        let condition = weather.condition!.lowercased()
+        let condition = weather.condition!.contains("Showers") ? "rain" : weather.condition!.lowercased()
+        let correctedCondition = (condition.contains("rain") || condition.contains("snow") || condition.contains("thunder"))
+            ? condition + "ing" : condition
         let temp = usingCelsius! ? fahrenheitToCelsius(weather.temp!) : weather.temp!
         let tempWords = getTempAnalysis()
         
-        return "Today in \(city) it is \(condition), and \(tempWords) at \(temp)° \(usingCelsius! ? "C" : "F")"
+        return "Today in \(city) it is \(correctedCondition), and \(tempWords) at \(temp)° \(usingCelsius! ? "C" : "F")"
     }
     
     /*
@@ -276,7 +274,7 @@ class WeatherViewController: UIViewController {
         let hour = Int(time.split(separator: ":")[0])
         let period = time.split(separator: " ")[1]
         
-        return (period == "am" || hour == 12) ? hour! : hour! + 12
+        return (period.lowercased() == "am" || hour == 12) ? hour! : hour! + 12
     }
     
     /*
