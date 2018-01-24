@@ -20,8 +20,7 @@ class Weather {
     var humidity: Int?
     var wind: Int?
     
-    init(_ city: String){
-        self.city = city
+    init() {
         self.weekCondition = [String]()
     }
 }

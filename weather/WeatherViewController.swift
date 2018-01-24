@@ -26,6 +26,8 @@ class WeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        weather = Weather()
+        
         hideUI()
         getWeather()
     }
@@ -41,7 +43,7 @@ class WeatherViewController: UIViewController {
                 let json = JSON(value)
                 let jsonResult = json["query"]["results"]["channel"]
                 
-                if let city = jsonResult["location"]["city"].string { self.weather = Weather(city) }
+                if let city = jsonResult["location"]["city"].string { self.weather.city = city }
                 if let temp = jsonResult["item"]["condition"]["temp"].string { self.weather.temp = Int(temp) }
                 if let condition = jsonResult["item"]["condition"]["text"].string { self.weather.condition = condition }
                 if let wind = jsonResult["wind"]["speed"].string { self.weather.wind = Int(wind) }
@@ -55,9 +57,12 @@ class WeatherViewController: UIViewController {
                         self.weather.weekCondition.append(weekCondition)
                     }
                 }
+                
+                print("got a response!")
+                
+                self.updateUI()
             }
             
-            self.updateUI()
             self.showUI()
         }
     }
@@ -78,11 +83,16 @@ class WeatherViewController: UIViewController {
      Matches the data from the weather object to the UI
      */
     private func updateUI() {
-        self.cityLabel.text = self.weather.city!
-        self.tempLabel.text = "\(usingCelsius! ? fahrenheitToCelsius(weather.temp!) : weather.temp!)° \(usingCelsius! ? "C" : "F")"
-        self.setBackground(with: self.weather.condition!)
-        
-        self.detailLabel.text = getFullAnalysis()
+        if let city = weather.city {
+            cityLabel.text = city
+        }
+        if let temp = weather.temp {
+            tempLabel.text = "\(usingCelsius! ? fahrenheitToCelsius(temp) : temp)° \(usingCelsius! ? "C" : "F")"
+        }
+        if let condition = weather.condition {
+            setBackground(with: condition)
+            detailLabel.text = getFullAnalysis()
+        }
     }
     
     /*
